@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
 interface Usuario {
-  id: string;
+  _id: string;
   nombre: string;
   correo: string;
   rol: string;
@@ -22,6 +22,7 @@ export const AuthContext = createContext<AuthContextProps>({
   cerrarSesion: () => {},
   estaAutenticado: false,
 });
+
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);

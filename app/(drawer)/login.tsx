@@ -1,12 +1,17 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import {
+  View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity
+} from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
+import api from '@/api';
+import { Ionicons } from '@expo/vector-icons'; // 👈 Íconos
 
 export default function LoginScreen() {
   const [correo, setCorreo] = useState('');
   const [contraseña, setContraseña] = useState('');
+  const [mostrarContraseña, setMostrarContraseña] = useState(false); // 👈 Estado para mostrar u ocultar
   const { iniciarSesion } = useContext(AuthContext);
   const router = useRouter();
 
@@ -16,14 +21,16 @@ export default function LoginScreen() {
     }
 
     try {
-      const res = await axios.post('http://localhost:3000/api/usuarios/login', {
-        correo,
-        contraseña,
-      });
+      const res = await api.post('/usuarios/login', { correo, contraseña });
 
       iniciarSesion(res.data.token, res.data.usuario);
       Alert.alert('Bienvenido', `Hola, ${res.data.usuario.nombre}`);
-      router.replace('./(tabs)/index'); // Redirige a Inicio
+
+      if (res.data.usuario.rol === 'admin') {
+        router.replace({ pathname: '/(admin)' });
+      } else {
+        router.replace({ pathname: '/(drawer)' });
+      }
 
     } catch (error: any) {
       console.error(error);
@@ -44,13 +51,23 @@ export default function LoginScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        placeholder="Contraseña"
-        style={styles.input}
-        value={contraseña}
-        onChangeText={setContraseña}
-        secureTextEntry
-      />
+
+      <View style={styles.passwordContainer}>
+        <TextInput
+          placeholder="Contraseña"
+          style={styles.passwordInput}
+          value={contraseña}
+          onChangeText={setContraseña}
+          secureTextEntry={!mostrarContraseña}
+        />
+        <TouchableOpacity onPress={() => setMostrarContraseña(!mostrarContraseña)}>
+          <Ionicons
+            name={mostrarContraseña ? 'eye-off-outline' : 'eye-outline'}
+            size={24}
+            color="gray"
+          />
+        </TouchableOpacity>
+      </View>
 
       <Button title="Entrar" onPress={handleLogin} />
     </View>
@@ -77,6 +94,19 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 15,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 8,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 10,
   },
 });
 

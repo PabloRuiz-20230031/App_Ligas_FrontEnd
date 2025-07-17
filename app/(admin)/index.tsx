@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function EquiposScreen() {
+export default function AdminInicioScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Equipos</Text>
-      <Text style={styles.subtitle}>Listado de equipos registrados en la liga.</Text>
+      <Text style={styles.title}>Panel de Administración</Text>
+      <Text style={styles.subtitle}>
+        Desde aquí puedes gestionar ligas, categorías, equipos, jugadores, usuarios y más.
+      </Text>
     </View>
   );
 }
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1E90FF',
     marginBottom: 10,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,

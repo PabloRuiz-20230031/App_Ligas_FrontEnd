@@ -1,31 +1,38 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../context/useAuth';
+import { View, Alert } from 'react-native';
 
 export default function PerfilScreen() {
+  const { estaAutenticado } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!estaAutenticado) {
+      Alert.alert(
+        '¡Atención!',
+        'Aún no tienes cuenta, ¿Quieres ir a registrarte? ⚽',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+            onPress: () => router.replace('/'),
+          },
+          {
+            text: 'Ir a registrarse',
+            onPress: () => router.replace('/(drawer)/registro'),
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  }, [estaAutenticado]);
+
+  if (!estaAutenticado) return null;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Perfil del Usuario</Text>
-      <Text style={styles.subtitle}>Aquí podrás ver o editar tu perfil.</Text>
+    <View style={{ flex: 1, padding: 20 }}>
+      {/* 👇 Aquí puedes mostrar los datos dinámicos del usuario autenticado */}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1E90FF',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#555',
-    textAlign: 'center',
-  },
-});
