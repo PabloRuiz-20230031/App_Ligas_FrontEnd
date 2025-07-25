@@ -23,7 +23,7 @@ export default function LoginScreen() {
     try {
       const res = await api.post('/usuarios/login', { correo, contraseña });
 
-      iniciarSesion(res.data.token, res.data.usuario);
+      iniciarSesion(res.data.token, res.data.usuario, res.data.apiKey);
       Alert.alert('Bienvenido', `Hola, ${res.data.usuario.nombre}`);
 
       if (res.data.usuario.rol === 'admin') {

@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AuthContext } from '../../../context/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
+import { BackHandler } from 'react-native';
 import api from '@/api';
 
 const CLOUD_NAME = 'dprwy1viz';
@@ -55,6 +56,18 @@ export default function LigaFormulario() {
       }
     }, [modo])
   );
+  useFocusEffect(
+            React.useCallback(() => {
+              const onBackPress = () => {
+                router.replace('/(admin)/ligas');
+                return true;
+              };
+    
+              const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    
+              return () => subscription.remove();
+            }, [])
+          );
 
   const obtenerLiga = async () => {
     try {

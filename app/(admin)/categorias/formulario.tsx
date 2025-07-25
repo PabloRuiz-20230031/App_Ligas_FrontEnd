@@ -6,11 +6,12 @@ import {
 import type { ImagePickerAsset } from 'expo-image-picker';
 import * as ImagePicker from 'expo-image-picker'; 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import api from '@/api';
 import { useRef } from 'react';
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const CLOUD_NAME = 'dprwy1viz';
 const UPLOAD_PRESET = 'liga_upload';
@@ -58,6 +59,18 @@ export default function CategoriaFormulario() {
           }
         }
       }, [modo, ligaInicial, ligasDisponibles])
+    );
+    useFocusEffect(
+      React.useCallback(() => {
+        const onBackPress = () => {
+          router.replace('/(admin)/categorias');
+          return true;
+        };
+
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () => subscription.remove();
+      }, [])
     );
 
   const obtenerLigas = async () => {

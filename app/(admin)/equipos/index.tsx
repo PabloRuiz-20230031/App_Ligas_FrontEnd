@@ -34,6 +34,8 @@ export default function IndexEquipos() {
 
   const [equipos, setEquipos] = useState<Equipo[]>([]);
 
+  const [hayTemporadaActiva, setHayTemporadaActiva] = useState(false);
+
   const seleccionarLiga = (liga: Liga) => {
   setLigaSeleccionada(liga);
   setBusquedaLiga(liga.nombre);
@@ -52,13 +54,13 @@ export default function IndexEquipos() {
   useEffect(() => {
     if (ligaSeleccionada) {
       const fetchCategorias = async () => {
-        const res = await api.get('/categorias');
-        const filtradas = res.data.filter((c: Categoria) => c.liga._id === ligaSeleccionada._id); // ✅ CORRECTO
-        setCategorias(filtradas);
+        const res = await api.get(`/categorias/por-liga/${ligaSeleccionada._id}`);
+        setCategorias(res.data);
       };
       fetchCategorias();
     }
   }, [ligaSeleccionada]);
+
 
   useEffect(() => {
     if (categoriaSeleccionada) {
@@ -83,6 +85,12 @@ export default function IndexEquipos() {
     }
   }, [categoriaSeleccionada])
 );
+
+useEffect(() => {
+  if (categoriaSeleccionada) {
+    verificarTemporadaActiva(categoriaSeleccionada._id);
+  }
+}, [categoriaSeleccionada]);
 
 
   const ligasFiltradas = busquedaLiga.length > 0
@@ -121,6 +129,15 @@ export default function IndexEquipos() {
         Alert.alert('Error al eliminar el equipo');
       }
     };
+
+    const verificarTemporadaActiva = async (categoriaId: string) => {
+    try {
+      const res = await api.get(`/temporadas/activa/${categoriaId}`);
+      setHayTemporadaActiva(res.data.activa); // espera que devuelvas `{ activa: true | false }` desde el backend
+    } catch (error) {
+      console.log('❌ Error al verificar temporada activa', error);
+    }
+  };
 
 
   return (
@@ -208,6 +225,7 @@ export default function IndexEquipos() {
                             </View>
                           </View>
 
+                          {!(item.nombre.toLowerCase() === 'descanso' || hayTemporadaActiva) && (
                           <View style={styles.botones}>
                             <TouchableOpacity
                               style={styles.botonEditar}
@@ -231,6 +249,7 @@ export default function IndexEquipos() {
                               <Text style={styles.textoBoton}>Eliminar</Text>
                             </TouchableOpacity>
                           </View>
+                        )}
                         </View>
                       )}
                     />
@@ -242,13 +261,23 @@ export default function IndexEquipos() {
         </View>
 
         {/* Botón anclado abajo */}
-        {categoriaSeleccionada && (
-          <View style={styles.botonAbajo}>
-            <Button title="Crear una nuevo Equipo" onPress={() => router.push({pathname: '/(admin)/equipos/formulario',
-              params: { categoriaId: categoriaSeleccionada._id },
-               })} color="#1E90FF" />
-          </View>
-        )}
+        {categoriaSeleccionada && !hayTemporadaActiva && (
+        <View style={styles.botonAbajo}>
+          <Button
+            title="Crear una nuevo Equipo"
+            onPress={() =>
+              router.push({
+                pathname: '/(admin)/equipos/formulario',
+                params: {
+                  categoriaId: categoriaSeleccionada._id,
+                  modo: 'crear', // ✅ agregas este campo explícitamente
+                },
+              })
+            }
+            color="#1E90FF"
+          />
+        </View>
+      )}
       </View>
     );
     }

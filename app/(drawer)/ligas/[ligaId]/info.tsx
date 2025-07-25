@@ -1,29 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { getLigas, Liga } from '@/services/ligaService';
-/*
-export const navigationOptions = {
-  drawerItemStyle: { display: 'none' },
-};  */
+import { getLigaPorId, Liga } from '@/services/ligaService';
 
 export default function InfoLigaScreen() {
-  
   const { ligaId } = useLocalSearchParams();
   const [liga, setLiga] = useState<Liga | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLiga = async () => {
-      try {
-        const ligas = await getLigas(); // Puedes usar getLigaPorId si lo tienes
-        const encontrada = ligas.find((l) => l.id === ligaId);
-        setLiga(encontrada || null);
-      } catch (error) {
-        console.error('Error al cargar la información de la liga:', error);
-      } finally {
-        setLoading(false);
-      }
+      const data = await getLigaPorId(ligaId as string);
+      setLiga(data);
+      setLoading(false);
     };
 
     fetchLiga();
@@ -35,13 +24,17 @@ export default function InfoLigaScreen() {
 
   return (
     <View style={styles.container}>
-      {liga.imagen ? (
-        <Image source={{ uri: liga.imagen }} style={styles.imagen} />
-      ) : null}
+      {liga.imagen && <Image source={{ uri: liga.imagen }} style={styles.imagen} />}
       <Text style={styles.nombre}>{liga.nombre}</Text>
-      <Text style={styles.detalle}>Descripción: Información detallada próximamente.</Text>
-      <Text style={styles.detalle}>Fecha de creación: (si tienes este campo)</Text>
-      <Text style={styles.detalle}>Creadores: (puedes agregar esto desde el backend)</Text>
+      <Text style={styles.detalle}>
+        Descripción: {liga.descripcion || 'Sin descripción disponible.'}
+      </Text>
+      <Text style={styles.detalle}>
+        Fecha de creación: {liga.fechaCreacion ? new Date(liga.fechaCreacion).toLocaleDateString() : 'Desconocida'}
+      </Text>
+      <Text style={styles.detalle}>
+        Creado por: {liga.creador?.nombre || 'No especificado'}
+      </Text>
     </View>
   );
 }

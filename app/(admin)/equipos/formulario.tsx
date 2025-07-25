@@ -9,10 +9,12 @@ import type { ImagePickerAsset } from 'expo-image-picker';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { AuthContext } from '../../../context/AuthContext';
 import api from '@/api';
+import { useCallback } from 'react';
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const CLOUD_NAME = 'dprwy1viz';
 const UPLOAD_PRESET = 'liga_upload';
-
 
 
 export default function EquipoFormulario() {
@@ -32,22 +34,35 @@ export default function EquipoFormulario() {
   const [imagenCloudinary, setImagenCloudinary] = useState('');
   const [cargando, setCargando] = useState(false);
 
-useEffect(() => {
-  if (modo === 'crear') {
-    setNombre('');
-    setDescripcion('');
-    setFechaCreacion(new Date());
-    setImagenUri(null);
-    setImagenCloudinary('');
-  }
-}, [modo]);
-
+useFocusEffect(
+  useCallback(() => {
+    if (modo === 'crear') {
+      setNombre('');
+      setDescripcion('');
+      setFechaCreacion(new Date());
+      setImagenUri(null);
+      setImagenCloudinary('');
+    }
+  }, [modo])
+)
 
 useEffect(() => {
   if (modo === 'editar' && equipoId) {
     obtenerEquipo();
   }
 }, [modo, equipoId]);
+  useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            router.replace('/(admin)/equipos');
+            return true;
+          };
+
+          const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+          return () => subscription.remove();
+        }, [])
+      );
 
 const obtenerEquipo = async () => {
   try {
@@ -148,8 +163,7 @@ const obtenerEquipo = async () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Registrar Equipo</Text>
-
+      <Text style={styles.title}>{modo === 'editar' ? 'Editar Equipo' : 'Registrar Equipo'}</Text>
       <TextInput
         placeholder="Nombre del equipo"
         style={styles.input}

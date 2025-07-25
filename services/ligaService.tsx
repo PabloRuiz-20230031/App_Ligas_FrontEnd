@@ -1,22 +1,27 @@
-import api from '../api';
+// services/ligaService.ts
+
+import api from '@/api';
 
 export interface Liga {
   id: string;
   nombre: string;
   imagen?: string;
+  descripcion?: string;
+  fechaCreacion?: string;
+  creador?: { nombre: string };
 }
 
 export const getLigas = async (): Promise<Liga[]> => {
+  const res = await api.get('/ligas');
+  return res.data;
+};
+
+export const getLigaPorId = async (id: string): Promise<Liga | null> => {
   try {
-    const res = await api.get('/ligas');
-    // Asegura que cada liga tenga un campo `id` compatible
-    return res.data.map((liga: any) => ({
-      id: liga._id,
-      nombre: liga.nombre,
-      imagen: liga.imagen || '', // si no hay imagen
-    }));
+    const res = await api.get(`/ligas/${id}`);
+    return res.data;
   } catch (error) {
-    console.error('Error al obtener ligas:', error);
-    throw error;
+    console.error('Error al obtener liga por ID', error);
+    return null;
   }
 };

@@ -92,7 +92,7 @@ export default function AdminCategorias() {
   );
 
   const categoriasFiltradas = categorias.filter(
-    (cat) => cat.liga._id === ligaSeleccionada?._id
+    (cat) => cat.liga && cat.liga._id === ligaSeleccionada?._id
   );
 
   const renderItem = ({ item }: { item: Categoria }) => (

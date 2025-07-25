@@ -1,12 +1,15 @@
 // services/redesService.ts
-import axios from 'axios';
+import api from '@/api'; // Asegúrate que esta ruta sea correcta según tu estructura
 
-const API_URL = 'http://localhost/api/redes-sociales'; // Reemplaza con tu URL real
+export type RedSocial = {
+  plataforma: 'facebook' | 'youtube';
+  url: string;
+};
 
-export const obtenerRedesSociales = async () => {
+export const obtenerRedesSociales = async (): Promise<RedSocial[]> => {
   try {
-    const response = await axios.get(API_URL);
-    return response.data; // Debería ser un array de objetos [{ plataforma: 'youtube', url: '...' }, ...]
+    const response = await api.get<RedSocial[]>('/redes-sociales');
+    return response.data;
   } catch (error) {
     console.error('Error al obtener las redes sociales:', error);
     return [];
