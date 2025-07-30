@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  Image, // 👈 Importante
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Categoria, getCategoriasPorLiga } from '@/services/categoriaService';
+import { Ionicons } from '@expo/vector-icons';
 /*
 export const navigationOptions = {
   drawerItemStyle: { display: 'none' },
@@ -36,26 +38,49 @@ export default function CategoriasScreen() {
   }, [ligaId]);
 
   const renderCategoria = ({ item }: { item: Categoria }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() =>
-        router.push({
-          pathname: "/(drawer)/ligas/[ligaId]/categorias/[categoriaId]/info",
-          params: {
-            ligaId: ligaId as string,
-            categoriaId: item.id,
-          },
-        })
-      }
-    >
-      <Text style={styles.nombre}>{item.nombre}</Text>
-    </TouchableOpacity>
+    <View style={styles.card}>
+      {/* Ir a categorías */}
+      <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/ligas/[ligaId]/categorias/[categoriaId]/equipos",
+            params: {
+              ligaId: ligaId as string,
+              categoriaId: item.id,
+            },
+          })
+        }
+      >
+        {item.imagen && (
+          <Image
+            source={{ uri: item.imagen }}
+            style={styles.imagen}
+            resizeMode="cover"
+          />
+        )}
+        <Text style={styles.nombre}>{item.nombre}</Text>
+      </TouchableOpacity>
+
+      {/* Ícono de información */}
+      <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/ligas/[ligaId]/categorias/[categoriaId]/info",
+            params: {
+              ligaId: ligaId as string,
+              categoriaId: item.id,
+            },
+          })
+        }
+        style={styles.infoIcon}
+      >
+        <Ionicons name="information-circle-outline" size={24} color="#007bff" />
+      </TouchableOpacity>
+    </View>
   );
 
   if (loading) {
-    return (
-      <ActivityIndicator size="large" color="#007bff" style={{ marginTop: 40 }} />
-    );
+    return <ActivityIndicator size="large" color="#007bff" style={{ marginTop: 40 }} />;
   }
 
   return (
@@ -72,17 +97,34 @@ export default function CategoriasScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     flex: 1,
+    padding: 16,
   },
   card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
     padding: 16,
     marginVertical: 8,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 12,
+    position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  imagen: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+    marginBottom: 8,
   },
   nombre: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
+  },
+  infoIcon: {
+    position: 'absolute',
+    right: 16,
+    top: 16,  
   },
 });

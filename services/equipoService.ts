@@ -13,19 +13,24 @@ export interface Jugador {
 export interface Equipo {
   id: string;
   nombre: string;
+  imagen?: string;
   representantes: Representante[];
   jugadores: Jugador[];
 }
 
-// Obtener todos los equipos de una categoría
+export interface DetalleEquipo extends Equipo {
+  representantes: Representante[];
+  jugadores: Jugador[];
+}
+
+// ✅ Lista
 export const getEquiposPorCategoria = async (categoriaId: string): Promise<Equipo[]> => {
   try {
     const res = await api.get(`/equipos/por-categoria/${categoriaId}`);
     return res.data.map((equipo: any) => ({
       id: equipo._id,
       nombre: equipo.nombre,
-      representantes: equipo.representantes || [],
-      jugadores: equipo.jugadores || [],
+      imagen: equipo.imagen || '',
     }));
   } catch (error) {
     console.error('Error al obtener equipos por categoría:', error);
@@ -33,13 +38,14 @@ export const getEquiposPorCategoria = async (categoriaId: string): Promise<Equip
   }
 };
 
-// Obtener un equipo por ID
-export const getEquipoPorId = async (equipoId: string): Promise<Equipo> => {
+// ✅ Detalle
+export const getEquipoPorId = async (equipoId: string): Promise<DetalleEquipo> => {
   try {
     const res = await api.get(`/equipos/${equipoId}`);
     return {
       id: res.data._id,
       nombre: res.data.nombre,
+      imagen: res.data.imagen || '',
       representantes: res.data.representantes || [],
       jugadores: res.data.jugadores || [],
     };

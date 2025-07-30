@@ -4,10 +4,12 @@ import { Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useContext } from 'react';
 import { AuthContext } from '@/context/AuthContext';
+import { Image } from 'react-native';
 
 export default function Layout() {
   const router = useRouter();
-  const { cerrarSesion } = useContext(AuthContext);
+  const { cerrarSesion, usuario } = useContext(AuthContext);
+
 
   const manejarCerrarSesion = () => {
     Alert.alert(
@@ -34,10 +36,18 @@ export default function Layout() {
           fontSize: 16,
         },
         headerRight: () => (
-          <Pressable onPress={() => router.push('/perfil')} style={{ marginRight: 15 }}>
+        <Pressable onPress={() => router.push('/perfil')} style={{ marginRight: 15 }}>
+          {usuario?.foto ? (
+            <Image
+              source={{ uri: usuario.foto }}
+              onError={() => console.log('❌ Error cargando imagen del perfil')}
+              style={{ width: 30, height: 30, borderRadius: 15 }}
+            />
+          ) : (
             <Ionicons name="person-circle-outline" size={26} color="#000" />
-          </Pressable>
-        ),
+          )}
+        </Pressable>
+      ),
       }}
     >
       {/* ✅ Ítems visibles */}
@@ -50,11 +60,13 @@ export default function Layout() {
       <Drawer.Screen name="cedulas/index" options={{ title: 'Registrar Cedula' }} />
       <Drawer.Screen name="redes/index" options={{ title: 'Registrar Redes' }} />
       <Drawer.Screen name="informacion/index" options={{ title: 'Registrar infromacion' }} />
+      <Drawer.Screen name="roles/index" options={{ title: 'Cambiar rol' }} />
       <Drawer.Screen
         name="cerrarSesion"
         options={{
           drawerLabel: 'Cerrar sesión',
           drawerItemStyle: { marginTop: 'auto' },
+          drawerLabelStyle: { color: 'red' },
           headerShown: false,
         }}
       />
@@ -69,6 +81,12 @@ export default function Layout() {
       <Drawer.Screen name="cedulas/formulario" options={{ drawerItemStyle: { display: 'none' }, title:'Registro de Cedula arbrital' }} />
       <Drawer.Screen name="cedulas/jornadas" options={{ drawerItemStyle: { display: 'none' }, title:'Seleccion de equipos' }} />
       <Drawer.Screen name="temporadas/[partidoId]" options={{ drawerItemStyle: { display: 'none' }, title:'Detalle del partido' }} />
+
+      <Drawer.Screen name="informacion/formularioContacto" options={{ drawerItemStyle: { display: 'none' }, title:'Formulario de Contacto' }} />
+      <Drawer.Screen name="informacion/formularioPoliticas" options={{ drawerItemStyle: { display: 'none' }, title:'Formulario de Politicas' }} />
+      <Drawer.Screen name="informacion/formularioTerminos" options={{ drawerItemStyle: { display: 'none' }, title:'Formulario de Terminos' }} />
+      <Drawer.Screen name="perfil" options={{ drawerItemStyle: { display: 'none' }, title:'Perfil' }} />
+
     </Drawer>
   );
 }

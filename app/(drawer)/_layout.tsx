@@ -19,21 +19,18 @@ export default function DrawerLayout() {
         drawerLabelStyle: {
           fontSize: 16,
         },
-        headerRight: () => (
-          <Pressable onPress={() => router.push('/perfil')} style={{ marginRight: 15 }}>
-            <Ionicons name="person-circle-outline" size={26} color="#000" />
-          </Pressable>
-        ),
       }}
     >
       <Drawer.Screen name="index" options={{ title: 'Inicio' }} />
+
+      
       <Drawer.Screen name="ligas" options={{ title: 'Ligas' }} />
       <Drawer.Screen name="contacto" options={{ title: 'Contacto' }} />
       <Drawer.Screen name="terminos" options={{ title: 'Términos y condiciones' }} />
       <Drawer.Screen name="politicas" options={{ title: 'Políticas de uso' }} />
       <Drawer.Screen name="facebook" options={{ title: 'Facebook' }} />
       <Drawer.Screen name="youtube" options={{ title: 'YouTube' }} />
-
+      <Drawer.Screen name="recuperarContra" options={{ title: 'Recuperar Contraseña' }} />
       {!estaAutenticado && (
         <Drawer.Screen name="login" options={{ title: 'Iniciar sesión' }} />
       )}

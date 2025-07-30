@@ -110,7 +110,7 @@ export default function CategoriaFormulario() {
   };
 
   const subirImagen = async () => {
-    if (!imagenUri?.uri) return '';
+    if (!imagenUri?.uri) return null;
 
     const uri = imagenUri.uri;
     const extension = uri.split('.').pop()?.toLowerCase() || 'jpg';

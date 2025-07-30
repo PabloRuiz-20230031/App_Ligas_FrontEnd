@@ -3,12 +3,18 @@
 import api from '@/api';
 
 export interface Liga {
-  id: string;
+  _id: string;
   nombre: string;
   imagen?: string;
   descripcion?: string;
-  fechaCreacion?: string;
-  creador?: { nombre: string };
+  fechaInicio?: string;
+  fechaFin?: string;
+  creador?: {
+    _id: string;
+    nombre: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const getLigas = async (): Promise<Liga[]> => {

@@ -43,7 +43,7 @@ export default function LigasScreen() {
         onPress={() =>
           router.push({
             pathname: "/ligas/[ligaId]/categorias",
-            params: { ligaId: item.id },
+            params: { ligaId: item._id },
           })
         }
       >
@@ -54,7 +54,7 @@ export default function LigasScreen() {
             resizeMode="cover"
           />
         )}
-        <Text style={styles.nombre}>{item.nombre}</Text>
+        <Text style={styles.nombre}>{item.nombre ?? 'Sin nombre'}</Text>
       </TouchableOpacity>
 
       {/* Ícono de información */}
@@ -62,7 +62,7 @@ export default function LigasScreen() {
         onPress={() =>
           router.push({
             pathname: "/ligas/[ligaId]/info",
-            params: { ligaId: item.id },
+            params: { ligaId: item._id },
           })
         }
         style={styles.infoIcon}
@@ -82,7 +82,7 @@ export default function LigasScreen() {
     <View style={styles.container}>
       <FlatList
         data={ligas}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item._id)}
         renderItem={renderLiga}
         ListEmptyComponent={<Text>No hay ligas disponibles</Text>}
       />

@@ -87,6 +87,14 @@ export default function TemporadasIndex() {
   };
 
   const confirmarTemporada = (categoria: any) => {
+    if (categoria.tieneTemporada) {
+      Alert.alert(
+        '⚠️ Temporada existente',
+        'Esta categoría ya tiene una temporada activa. No puedes crear otra hasta eliminar la actual.'
+      );
+      return;
+    }
+
     Alert.alert(
       'Crear Temporada',
       `Está a punto de crear una temporada para la categoría ${categoria.nombre} de la liga ${ligaSeleccionada.nombre}`,
@@ -103,8 +111,7 @@ export default function TemporadasIndex() {
                 nombreCategoria: categoria.nombre,
                 nombreLiga: ligaSeleccionada.nombre
               }
-              
-            }as any);
+            } as any);
           }
         }
       ]

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import api from '@/api';
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function RegistroScreen() {
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('');
+  const [contraseña, setContraseña, ] = useState('');
+  const [mostrarContraseña, setMostrarContraseña] = useState(false);
 
   const handleRegistro = async () => {
     if (!nombre || !correo || !contraseña) {
@@ -45,13 +47,22 @@ export default function RegistroScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        placeholder="Contraseña"
-        style={styles.input}
-        value={contraseña}
-        onChangeText={setContraseña}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          placeholder="Contraseña"
+          style={styles.passwordInput}
+          value={contraseña}
+          onChangeText={setContraseña}
+          secureTextEntry={!mostrarContraseña}
+        />
+        <TouchableOpacity onPress={() => setMostrarContraseña(!mostrarContraseña)}>
+          <Ionicons
+            name={mostrarContraseña ? 'eye-off-outline' : 'eye-outline'}
+            size={24}
+            color="gray"
+          />
+        </TouchableOpacity>
+      </View>
 
       <Button title="Registrarse" onPress={handleRegistro} />
     </View>
@@ -79,6 +90,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 15,
   },
+    passwordContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#aaa',
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      marginBottom: 15,
+      },
+      toggleText: {
+      marginLeft: 10,
+      fontSize: 18,
+      },
+      passwordInput: {
+      flex: 1,
+      paddingVertical: 10,
+    },
 });
 
 export const screenOptions = {

@@ -3,11 +3,11 @@ import { Slot } from 'expo-router';
 import { AuthProvider } from '../context/AuthContext';
 
 export default function RootLayout() {
-  console.log('✅ RootLayout cargado'); // ✅ Mover aquí
+  console.log('✅ RootLayout cargado'); // ✅ Esto está bien en consola
 
   return (
     <AuthProvider>
-      <Slot /> {/* Esto renderiza las rutas como (admin), public, etc. */}
+      <Slot /> {/* ✅ Este renderiza tus rutas */}
     </AuthProvider>
   );
 }

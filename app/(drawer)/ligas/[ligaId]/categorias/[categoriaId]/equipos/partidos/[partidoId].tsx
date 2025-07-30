@@ -1,24 +1,18 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, BackHandler } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { AuthContext } from '@/context/AuthContext';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import api from '@/api';
-import { useFocusEffect } from '@react-navigation/native';
 
 const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dprwy1viz/image/upload/v1721531371/escudo_default.png';
 
-export default function DetallePartido() {
+export default function DetallePartidoPublico() {
   const { partidoId } = useLocalSearchParams();
-  const { token } = useContext(AuthContext);
   const [datos, setDatos] = useState<any>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get(`/cedulas/partido/${partidoId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get(`/cedulas/partido/${partidoId}`);
         setDatos(res.data);
       } catch (error) {
         console.error('❌ Error al obtener datos del partido:', error);
@@ -27,19 +21,6 @@ export default function DetallePartido() {
 
     fetchData();
   }, [partidoId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      const backAction = () => {
-        router.replace('/(admin)/temporadas/detalle');
-        return true;
-      };
-
-      const subscription = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-      return () => subscription.remove();
-    }, [])
-  );
 
   if (!datos) {
     return <Text style={{ padding: 16 }}>Cargando datos del partido...</Text>;
@@ -53,65 +34,27 @@ export default function DetallePartido() {
       tipo: 'goles' | 'amarillas' | 'rojas';
     }[] = [];
 
-    // Goles anotadores
     datos.anotadoresLocal?.forEach((a: any) => {
-      eventos.push({
-        lado: 'izquierda',
-        texto: `${a.jugador?.nombre} – Min ${a.minuto}`,
-        icono: '⚽',
-        tipo: 'goles',
-      });
+      eventos.push({ lado: 'izquierda', texto: `${a.jugador?.nombre} – Min ${a.minuto}`, icono: '⚽', tipo: 'goles' });
     });
 
     datos.anotadoresVisitante?.forEach((a: any) => {
-      eventos.push({
-        lado: 'derecha',
-        texto: `${a.jugador?.nombre} – Min ${a.minuto}`,
-        icono: '⚽',
-        tipo: 'goles',
-      });
+      eventos.push({ lado: 'derecha', texto: `${a.jugador?.nombre} – Min ${a.minuto}`, icono: '⚽', tipo: 'goles' });
     });
 
-    // Autogoles
     datos.autogoles?.forEach((a: any) => {
       const lado = a.equipo === datos.equipoLocal._id ? 'izquierda' : 'derecha';
-      eventos.push({
-        lado,
-        texto: `Autogol – Min ${a.minuto}`,
-        icono: '⚽',
-        tipo: 'goles',
-      });
+      eventos.push({ lado, texto: `Autogol – Min ${a.minuto}`, icono: '⚽', tipo: 'goles' });
     });
 
-    // Amonestaciones
     datos.amonestaciones?.forEach((a: any) => {
-      const jugadorId = a.jugador?._id;
-      const esLocal = datos.equipoLocal.jugadores?.some((j: any) => j._id === jugadorId);
-      const equipoNombre = esLocal ? datos.equipoVisitante.nombre : datos.equipoLocal.nombre;
-      const lado = esLocal ? 'derecha' : 'izquierda';
-      
-
-      eventos.push({
-        lado,
-        texto: `${a.jugador?.nombre} (${equipoNombre}) – Dorsal ${a.jugador?.dorsal} – ${a.motivo || 'Sin motivo'} – Min ${a.minuto}`,
-        icono: '🟨',
-        tipo: 'amarillas',
-      });
+      const lado = a.jugador?.equipo === datos.equipoLocal._id ? 'derecha' : 'izquierda';
+      eventos.push({ lado, texto: `${a.jugador?.nombre} – Min ${a.minuto}`, icono: '🟨', tipo: 'amarillas' });
     });
 
-    // Expulsiones
     datos.expulsiones?.forEach((a: any) => {
-      const jugadorId = a.jugador?._id;
-      const esLocal = datos.equipoLocal.jugadores?.some((j: any) => j._id === jugadorId);
-      const equipoNombre = esLocal ? datos.equipoVisitante.nombre : datos.equipoLocal.nombre;
-      const lado = esLocal ? 'derecha' : 'izquierda';
-
-      eventos.push({
-        lado,
-        texto: `${a.jugador?.nombre} – Dorsal ${a.jugador?.dorsal} – ${a.motivo || 'Sin motivo'} – Min ${a.minuto}`,
-        icono: '🟥',
-        tipo: 'rojas',
-      });
+      const lado = a.jugador?.equipo === datos.equipoLocal._id ? 'derecha' : 'izquierda';
+      eventos.push({ lado, texto: `${a.jugador?.nombre} – Min ${a.minuto}`, icono: '🟥', tipo: 'rojas' });
     });
 
     return {
@@ -161,10 +104,6 @@ export default function DetallePartido() {
       <BloqueEventos titulo="Amonestaciones" items={eventos.amarillas} />
       <BloqueEventos titulo="Expulsiones" items={eventos.rojas} />
 
-      <View style={{ marginTop: 30 }}>
-        <Text style={styles.subtitulo}>Notas del Partido</Text>
-        <Text style={styles.notas}>{datos.notas || 'Sin observaciones.'}</Text>
-      </View>
     </ScrollView>
   );
 }

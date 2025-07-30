@@ -6,6 +6,7 @@ interface Usuario {
   nombre: string;
   correo: string;
   rol: string;
+  foto?: string;
 }
 
 interface AuthContextProps {
@@ -39,8 +40,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const k = await AsyncStorage.getItem('apiKey');
 
       if (t && u) {
+        const usuarioParseado = JSON.parse(u);
+        console.log('✅ Usuario cargado desde AsyncStorage:', usuarioParseado);
+
         setToken(t);
-        setUsuario(JSON.parse(u));
+        setUsuario(usuarioParseado);
         setApiKey(k);
       }
     };

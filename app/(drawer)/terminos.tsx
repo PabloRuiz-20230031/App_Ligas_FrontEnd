@@ -1,21 +1,46 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import api from '@/api';
 
-const TerminosScreen = () => {
+export default function TerminosScreen() {
+  const [items, setItems] = useState<string[]>([]);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    const fetchTerminos = async () => {
+      try {
+        const res = await api.get('/info/terminos');
+        setItems(res.data.items || []);
+      } catch (err) {
+        console.error('Error al cargar términos', err);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    fetchTerminos();
+  }, []);
+
+  if (cargando) {
+    return <ActivityIndicator style={{ flex: 1 }} size="large" color="#000" />;
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Términos y Condiciones</Text>
-      <Text style={styles.texto}>
-        Aquí irán los términos y condiciones que rigen el uso de esta aplicación. Puedes modificar este contenido desde el panel de administración.
-      </Text>
+      {items.length > 0 ? (
+        items.map((item, idx) => (
+          <Text key={idx} style={styles.texto}>• {item}</Text>
+        ))
+      ) : (
+        <Text style={styles.texto}>No se encontraron términos registrados.</Text>
+      )}
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
+  container: { padding: 20 },
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -23,12 +48,11 @@ const styles = StyleSheet.create({
   },
   texto: {
     fontSize: 16,
-    lineHeight: 22
+    lineHeight: 22,
+    marginBottom: 10
   }
 });
 
-export default TerminosScreen;
-
 export const screenOptions = {
-  title: 'Terminos y Condiciones',
+  title: 'Términos y Condiciones',
 };

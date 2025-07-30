@@ -30,7 +30,7 @@ export default function InfoLigaScreen() {
         Descripción: {liga.descripcion || 'Sin descripción disponible.'}
       </Text>
       <Text style={styles.detalle}>
-        Fecha de creación: {liga.fechaCreacion ? new Date(liga.fechaCreacion).toLocaleDateString() : 'Desconocida'}
+        Fecha de creación: {liga.createdAt ? new Date(liga.createdAt).toLocaleDateString() : 'Desconocida'}
       </Text>
       <Text style={styles.detalle}>
         Creado por: {liga.creador?.nombre || 'No especificado'}

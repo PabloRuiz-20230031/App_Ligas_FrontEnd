@@ -46,6 +46,17 @@ export default function TemporadaFormulario() {
     if (!nombre || !fechaInicio || !fechaFin) {
       return Alert.alert('Faltan campos obligatorios');
     }
+    // 🔒 Validación de fechas
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (fechaInicio < hoy) {
+      return Alert.alert('⚠️ Fecha inválida', 'La fecha de inicio no puede ser anterior a hoy.');
+    }
+
+    if (fechaFin <= fechaInicio) {
+      return Alert.alert('⚠️ Fecha inválida', 'La fecha de fin debe ser posterior a la fecha de inicio.');
+    }
 
     try {
       setCargando(true);
@@ -91,6 +102,7 @@ export default function TemporadaFormulario() {
       setCargando(false);
     }
   };
+
 
   return (
     <View style={styles.container}>

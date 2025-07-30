@@ -23,14 +23,18 @@ export default function LoginScreen() {
     try {
       const res = await api.post('/usuarios/login', { correo, contraseña });
 
-      iniciarSesion(res.data.token, res.data.usuario, res.data.apiKey);
-      Alert.alert('Bienvenido', `Hola, ${res.data.usuario.nombre}`);
+      const { usuario, token, apiKey } = res.data;
 
-      if (res.data.usuario.rol === 'admin') {
-        router.replace({ pathname: '/(admin)' });
-      } else {
-        router.replace({ pathname: '/(drawer)' });
+      if (usuario.rol !== 'admin') {
+        return Alert.alert(
+          'Acceso restringido',
+          'Solo los administradores tienen acceso a esta aplicación. Si usted es administrador, por favor contacte con otro administrador para que actualice su rol.'
+        );
       }
+
+      iniciarSesion(token, usuario, apiKey);
+      Alert.alert('Bienvenido', `Hola, ${usuario.nombre}`);
+      router.replace({ pathname: '/(admin)' });
 
     } catch (error: any) {
       console.error(error);
