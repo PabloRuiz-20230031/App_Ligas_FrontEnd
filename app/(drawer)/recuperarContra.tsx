@@ -35,6 +35,7 @@ export default function RecuperarContrasena() {
       <TextInput
         style={styles.input}
         placeholder="Ingresa tu correo"
+        placeholderTextColor="#888"
         keyboardType="email-address"
         value={correo}
         onChangeText={setCorreo}
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f8ff',
   },
   titulo: {
     fontSize: 24,
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#aaa',
     padding: 10,

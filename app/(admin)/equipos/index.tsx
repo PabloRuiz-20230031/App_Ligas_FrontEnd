@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Pressable, Image, StyleSheet, Button, Alert } from 'react-native';
-import api from '@/api'; // Asegúrate de tener configurada la API
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, Pressable, Image, StyleSheet, Button, Alert, ScrollView } from 'react-native';
+import api from '@/api';
 import { useRouter } from 'expo-router';
-import { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+
 
 type Liga = { _id: string; nombre: string;  };
 type Categoria = {
@@ -141,21 +141,27 @@ useEffect(() => {
 
 
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Registrar Equipo</Text>
-
+    <View style={styles.container}>
+      <Text style={styles.title}>Registrar Equipo</Text>
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
         <View style={{ flex: 1 }}>
           {!ligaSeleccionada ? (
             <>
               <TextInput
                 style={styles.input}
                 placeholder="Escribe el nombre de la liga"
+                placeholderTextColor="#888"
                 value={busquedaLiga}
                 onChangeText={setBusquedaLiga}
               />
-              {ligasFiltradas.map(l => (
-                <TouchableOpacity key={l._id} style={styles.suggestion} onPress={() => setLigaSeleccionada(l)}>
-                  <Text>{l.nombre}</Text>
+              {ligasFiltradas.map((liga) => (
+                <TouchableOpacity
+                  key={liga._id}
+                  style={styles.cardSugerencia}
+                  onPress={() => setLigaSeleccionada(liga)}
+                >
+                  <Text style={styles.nombreSugerencia}>{liga.nombre}</Text>
+                  <Text style={styles.detalleSugerencia}>Presiona para seleccionar</Text>
                 </TouchableOpacity>
               ))}
             </>
@@ -176,19 +182,18 @@ useEffect(() => {
               <TextInput
                 style={styles.input}
                 placeholder="Escribe el nombre de la categoría"
+                placeholderTextColor="#888"
                 value={busquedaCategoria}
                 onChangeText={setBusquedaCategoria}
               />
-              {!categoriaSeleccionada && categoriasFiltradas.map(c => (
+              {!categoriaSeleccionada && categoriasFiltradas.map(cat => (
                 <TouchableOpacity
-                  key={c._id}
-                  style={styles.suggestion}
-                  onPress={() => {
-                    setCategoriaSeleccionada(c);
-                    setBusquedaCategoria(c.nombre);
-                  }}
+                  key={cat._id}
+                  style={styles.cardSugerencia}
+                  onPress={() => setCategoriaSeleccionada(cat)}
                 >
-                  <Text>{c.nombre}</Text>
+                  <Text style={styles.nombreSugerencia}>{cat.nombre}</Text>
+                  <Text style={styles.detalleSugerencia}>Pertenece a {cat.liga?.nombre || 'sin liga'}</Text>
                 </TouchableOpacity>
               ))}
 
@@ -205,6 +210,24 @@ useEffect(() => {
                   >
                     <Text style={styles.btnGrayText}>Cambiar de categoría</Text>
                   </Pressable>
+
+                  {categoriaSeleccionada && !hayTemporadaActiva && (
+                    <View style={styles.botonCrear}>
+                      <Button
+                        title="Crear un nuevo Equipo"
+                        onPress={() =>
+                          router.push({
+                            pathname: '/(admin)/equipos/formulario',
+                            params: {
+                              categoriaId: categoriaSeleccionada._id,
+                              modo: 'crear',
+                            },
+                          })
+                        }
+                        color="#1E90FF"
+                      />
+                    </View>
+                )}
 
                   {equipos.length === 0 ? (
                     <Text style={{ marginTop: 20, textAlign: 'center' }}>Aún no hay equipos</Text>
@@ -226,30 +249,30 @@ useEffect(() => {
                           </View>
 
                           {!(item.nombre.toLowerCase() === 'descanso' || hayTemporadaActiva) && (
-                          <View style={styles.botones}>
-                            <TouchableOpacity
-                              style={styles.botonEditar}
-                              onPress={() =>
-                                router.push({
-                                  pathname: '/(admin)/equipos/formulario',
-                                  params: {
-                                    equipoId: item._id,
-                                    modo: 'editar',
-                                    categoriaId: item.categoria?._id
-                                  }
-                                })
-                              }
-                            >
-                              <Text style={styles.textoBoton}>Editar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={styles.botonEliminar}
-                              onPress={() => confirmarEliminacion(item._id)}
-                            >
-                              <Text style={styles.textoBoton}>Eliminar</Text>
-                            </TouchableOpacity>
-                          </View>
-                        )}
+                            <View style={styles.botones}>
+                              <TouchableOpacity
+                                style={styles.botonEditar}
+                                onPress={() =>
+                                  router.push({
+                                    pathname: '/(admin)/equipos/formulario',
+                                    params: {
+                                      equipoId: item._id,
+                                      modo: 'editar',
+                                      categoriaId: item.categoria?._id
+                                    }
+                                  })
+                                }
+                              >
+                                <Text style={styles.textoBoton}>Editar</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.botonEliminar}
+                                onPress={() => confirmarEliminacion(item._id)}
+                              >
+                                <Text style={styles.textoBoton}>Eliminar</Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
                         </View>
                       )}
                     />
@@ -259,38 +282,31 @@ useEffect(() => {
             </>
           )}
         </View>
-
-        {/* Botón anclado abajo */}
-        {categoriaSeleccionada && !hayTemporadaActiva && (
-        <View style={styles.botonAbajo}>
-          <Button
-            title="Crear una nuevo Equipo"
-            onPress={() =>
-              router.push({
-                pathname: '/(admin)/equipos/formulario',
-                params: {
-                  categoriaId: categoriaSeleccionada._id,
-                  modo: 'crear', // ✅ agregas este campo explícitamente
-                },
-              })
-            }
-            color="#1E90FF"
-          />
-        </View>
-      )}
-      </View>
-    );
-    }
+      </ScrollView>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 15, backgroundColor: '#f2f8ff' },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
     padding: 10, marginBottom: 10
   },
   suggestion: {
-    padding: 10, backgroundColor: '#eee', marginBottom: 5, borderRadius: 5,
+    padding: 16,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   info: { marginBottom: 8 },
   btnGray: {
@@ -345,5 +361,27 @@ textoBoton: {
   color: '#fff',
   fontWeight: 'bold',
   textAlign: 'center',
+},
+cardSugerencia: {
+  backgroundColor: '#e0ecff',
+  borderWidth: 1,
+  borderColor: '#1E90FF',
+  borderRadius: 10,
+  padding: 10,
+  marginBottom: 10,
+},
+nombreSugerencia: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  color: '#003366',
+},
+detalleSugerencia: {
+  fontSize: 13,
+  color: '#555',
+  marginTop: 4,
+},
+botonCrear: {
+  marginBottom: 20,
+  marginTop: 10,
 },
 });

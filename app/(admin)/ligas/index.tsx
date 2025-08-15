@@ -90,12 +90,15 @@ export default function LigasAdminScreen() {
 
       <TextInput
         placeholder="Buscar liga por nombre"
+        placeholderTextColor="#888"
         value={busqueda}
         onChangeText={setBusqueda}
         style={styles.input}
       />
 
-      <Button title="Crear nueva liga" onPress={crearLiga} />
+      <View style={styles.botonCrearContainer}>
+        <Button title="Crear nueva liga" onPress={crearLiga} />
+      </View>
 
       <FlatList
         data={ligasFiltradas}
@@ -128,14 +131,18 @@ export default function LigasAdminScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f2f8ff' },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#1E90FF' },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
+  },
+  botonCrearContainer: {
+    marginBottom: 20,
   },
   card: {
     borderWidth: 1,

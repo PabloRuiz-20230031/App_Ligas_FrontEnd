@@ -15,19 +15,21 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import api from '@/api';
 import { AuthContext } from '@/context/AuthContext';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
-const CLOUD_NAME = 'dprwy1viz';
+const CLOUD_NAME = 'dkxz5wm2h';
 const UPLOAD_PRESET = 'liga_upload';
 
 export default function PerfilAdmin() {
-  const { token } = useContext(AuthContext);
+  const { token, actualizarUsuario } = useContext(AuthContext);
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [nuevaContraseña, setNuevaContraseña] = useState('');
   const [foto, setFoto] = useState('');
   const [cargando, setCargando] = useState(true);
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const cargarPerfil = async () => {
@@ -103,6 +105,8 @@ export default function PerfilAdmin() {
         });
 
         Alert.alert('Perfil actualizado correctamente');
+        await actualizarUsuario();
+        router.replace('/(admin)');
         setNuevaContraseña('');
     } catch (error) {
         Alert.alert('Error al actualizar perfil');
@@ -119,7 +123,7 @@ export default function PerfilAdmin() {
 
       <TouchableOpacity onPress={seleccionarImagen}>
         <Image
-          source={{ uri: foto || 'https://res.cloudinary.com/dprwy1viz/image/upload/v1721531371/escudo_default.png' }}
+          source={{ uri: foto || 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755208069/x4crphwybochload8etr.png' }}
           style={styles.foto}
         />
         <Text style={styles.cambiarFoto}>Cambiar Foto</Text>
@@ -128,6 +132,7 @@ export default function PerfilAdmin() {
       <TextInput
         style={styles.input}
         placeholder="Nombre"
+        placeholderTextColor="#888"
         value={nombre}
         onChangeText={setNombre}
       />
@@ -135,6 +140,7 @@ export default function PerfilAdmin() {
       <TextInput
         style={styles.input}
         placeholder="Correo"
+        placeholderTextColor="#888"
         value={correo}
         onChangeText={setCorreo}
         keyboardType="email-address"
@@ -143,6 +149,7 @@ export default function PerfilAdmin() {
         <View style={styles.passwordContainer}>
         <TextInput
           placeholder="Nueva Constraseña (opcional)"
+          placeholderTextColor="#888"
           style={styles.passwordInput}
           value={nuevaContraseña}
           onChangeText={setNuevaContraseña}
@@ -165,6 +172,7 @@ export default function PerfilAdmin() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f2f8ff'
   },
   titulo: {
     fontSize: 24,
@@ -172,6 +180,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#aaa',
     borderRadius: 8,
@@ -204,6 +213,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     },
     passwordInput: {
+    color: '#000',
     flex: 1,
     paddingVertical: 10,
   },

@@ -148,6 +148,45 @@ export default function CedulaFormulario() {
     }
     }
 
+    // Validar autogoles
+    for (let i = 0; i < autogoles.length; i++) {
+      const { equipo, minuto } = autogoles[i];
+      if (!equipo || !minuto) {
+        Alert.alert(
+          'Error',
+          `El autogol #${i + 1} debe tener ${!equipo ? 'equipo' : ''}${!equipo && !minuto ? ' y ' : ''}${!minuto ? 'minuto' : ''}.`
+        );
+        setEnviando(false);
+        return;
+      }
+    }
+
+    // Validar amonestaciones
+    for (let i = 0; i < amonestaciones.length; i++) {
+      const { jugador, minuto, motivo } = amonestaciones[i];
+      if (!jugador || !minuto || !motivo) {
+        Alert.alert(
+          'Error',
+          `La amonestación #${i + 1} debe tener ${!jugador ? 'jugador' : ''}${!jugador && (!minuto || !motivo) ? ', ' : ''}${!minuto ? 'minuto' : ''}${!motivo && !jugador && minuto ? ', ' : ''}${!motivo ? 'motivo' : ''}.`
+        );
+        setEnviando(false);
+        return;
+      }
+    }
+
+    // Validar expulsiones
+    for (let i = 0; i < expulsiones.length; i++) {
+      const { jugador, minuto, causa } = expulsiones[i];
+      if (!jugador || !minuto || !causa) {
+        Alert.alert(
+          'Error',
+          `La expulsión #${i + 1} debe tener ${!jugador ? 'jugador' : ''}${!jugador && (!minuto || !causa) ? ', ' : ''}${!minuto ? 'minuto' : ''}${!causa && !jugador && minuto ? ', ' : ''}${!causa ? 'causa' : ''}.`
+        );
+        setEnviando(false);
+        return;
+      }
+    }
+
     const amarillas = amonestaciones.map(a => a.jugador);
     const rojas = expulsiones.map(e => e.jugador);
 
@@ -160,7 +199,7 @@ export default function CedulaFormulario() {
     }
 
     try {
-        const payload = {
+      const payload = {
         partidoId,
         temporadaId,
         golesLocal: golesLFinal,
@@ -171,17 +210,17 @@ export default function CedulaFormulario() {
         amonestaciones,
         expulsiones,
         notas
-        };
+      };
 
-        await api.post('/cedulas', payload);
-        Alert.alert('Éxito', 'Cédula registrada');
-        router.back();
+      await api.post('/cedulas', payload);
+      Alert.alert('Éxito', 'Cédula registrada');
+      router.back();
     } catch (error) {
-        console.error('Error al guardar la cédula:', error);
+      console.error('Error al guardar la cédula:', error);
     } finally {
-        setEnviando(false); // ✅ se libera para permitir nuevo envío
+      setEnviando(false);
     }
-    };
+  };
   
 
   return (
@@ -209,6 +248,7 @@ export default function CedulaFormulario() {
                 updated[idx].jugador = value;
                 setAnotadoresLocal(updated);
             }}
+             style={{ color: 'black' }}
             >
             <Picker.Item label="Selecciona anotador" value="" />
             {jugadoresLocal.map((j: Jugador) => (
@@ -218,8 +258,9 @@ export default function CedulaFormulario() {
 
             <TextInput
             placeholder="Minuto"
+            placeholderTextColor="#888"
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             value={a.minuto}
             onChangeText={(val) => {
                 const updated = [...anotadoresLocal];
@@ -241,6 +282,7 @@ export default function CedulaFormulario() {
         const cantidad = parseInt(text) || 0;
         setAnotadoresVisitante(Array.from({ length: cantidad }, () => ({ jugador: '', minuto: '' })));
         }}
+        
       />
 
       
@@ -253,6 +295,7 @@ export default function CedulaFormulario() {
                 updated[idx].jugador = value;
                 setAnotadoresVisitante(updated);
             }}
+            style={{ color: 'black' }}
             >
             <Picker.Item label="Selecciona anotador" value="" />
             {jugadoresVisitante.map((j: Jugador) => (
@@ -266,8 +309,9 @@ export default function CedulaFormulario() {
 
             <TextInput
             placeholder="Minuto"
+            placeholderTextColor="#888"
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             value={a.minuto}
             onChangeText={(val) => {
                 const updated = [...anotadoresVisitante];
@@ -287,6 +331,7 @@ export default function CedulaFormulario() {
                 updated[idx].equipo = value;
                 setAutogoles(updated);
             }}
+            style={{ color: 'black' }}
             >
             <Picker.Item label="Selecciona equipo" value="" />
             <Picker.Item label="Equipo Local" value={jugadoresLocal[0]?.equipo} />
@@ -294,8 +339,9 @@ export default function CedulaFormulario() {
             </Picker>
             <TextInput
             placeholder="Minuto"
+            placeholderTextColor="#888"
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             value={a.minuto}
             onChangeText={(val) => {
                 const updated = [...autogoles];
@@ -331,6 +377,7 @@ export default function CedulaFormulario() {
               updated[idx].jugador = value;
               setAmonestaciones(updated);
             }}
+            style={{ color: 'black' }}
           >
             <Picker.Item label="Selecciona jugador" value="" />
             {jugadores.map((j: Jugador) => (
@@ -343,8 +390,9 @@ export default function CedulaFormulario() {
           </Picker>
           <TextInput
             placeholder="Minuto"
+            placeholderTextColor="#888"
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             value={a.minuto}
             onChangeText={val => {
               const updated = [...amonestaciones];
@@ -354,6 +402,7 @@ export default function CedulaFormulario() {
           />
           <TextInput
             placeholder="Motivo"
+            placeholderTextColor="#888"
             style={styles.input}
             value={a.motivo}
             onChangeText={val => {
@@ -387,6 +436,7 @@ export default function CedulaFormulario() {
               updated[idx].jugador = value;
               setExpulsiones(updated);
             }}
+            style={{ color: 'black' }}
           >
             <Picker.Item label="Selecciona jugador" value="" />
             {jugadores.map((j: Jugador) => (
@@ -399,8 +449,9 @@ export default function CedulaFormulario() {
           </Picker>
           <TextInput
             placeholder="Minuto"
+            placeholderTextColor="#888"
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             value={e.minuto}
             onChangeText={val => {
               const updated = [...expulsiones];
@@ -410,6 +461,7 @@ export default function CedulaFormulario() {
           />
           <TextInput
             placeholder="Causa"
+            placeholderTextColor="#888"
             style={styles.input}
             value={e.causa}
             onChangeText={val => {
@@ -456,10 +508,11 @@ export default function CedulaFormulario() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#fff' },
+  container: { padding: 16, backgroundColor: '#f2f8ff' },
   title: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   label: { marginTop: 12, fontWeight: 'bold' },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,

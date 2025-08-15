@@ -49,6 +49,7 @@ export default function LoginScreen() {
 
       <TextInput
         placeholder="Correo"
+        placeholderTextColor="#888"
         style={styles.input}
         value={correo}
         onChangeText={setCorreo}
@@ -59,6 +60,7 @@ export default function LoginScreen() {
       <View style={styles.passwordContainer}>
         <TextInput
           placeholder="Contraseña"
+          placeholderTextColor="#888"
           style={styles.passwordInput}
           value={contraseña}
           onChangeText={setContraseña}
@@ -81,7 +83,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f8ff',
     flex: 1,
     justifyContent: 'center',
   },
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#aaa',
     padding: 10,
@@ -109,6 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   passwordInput: {
+    color: '#000',
     flex: 1,
     paddingVertical: 10,
   },

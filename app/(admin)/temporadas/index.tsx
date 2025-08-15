@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 
 import {
   View, Text, TextInput, FlatList,
-  TouchableOpacity, Alert, StyleSheet
+  TouchableOpacity, Alert, StyleSheet, ScrollView
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import api from '@/api';
@@ -22,7 +22,9 @@ type CategoriaConInfo = {
   liga: string;
   totalEquipos: number;
   tieneTemporada: boolean;
-  temporadaId?: string; // ✅ Agregado como opcional
+  temporadaId?: string;
+  temporadaActiva?: boolean;
+  nombreTemporada?: string; // ✅ agregado
 };
 
 type CategoriaConTemporada = {
@@ -87,10 +89,10 @@ export default function TemporadasIndex() {
   };
 
   const confirmarTemporada = (categoria: any) => {
-    if (categoria.tieneTemporada) {
+    if (categoria.temporadaActiva) {
       Alert.alert(
-        '⚠️ Temporada existente',
-        'Esta categoría ya tiene una temporada activa. No puedes crear otra hasta eliminar la actual.'
+        '⚠️ Temporada activa',
+        'Esta categoría ya tiene una temporada activa. No puedes crear otra hasta que finalice o se elimine.'
       );
       return;
     }
@@ -118,6 +120,7 @@ export default function TemporadasIndex() {
     );
   };
 
+
   const editarTemporada = (item: CategoriaConInfo) => {
     router.push({
         pathname: '/(admin)/temporadas/formulario',
@@ -133,7 +136,6 @@ export default function TemporadasIndex() {
 
      const eliminarTemporada = async (categoriaId: string) => {
         try {
-            // 🔧 CORREGIDO: ruta correcta
             const res = await api.get(`/temporadas/categoria/${categoriaId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -155,7 +157,6 @@ export default function TemporadasIndex() {
 
             Alert.alert('✅ Temporada eliminada correctamente');
 
-            // Refrescar categorías
             if (ligaSeleccionada) {
             const recarga = await api.get(`/categorias/por-liga/${ligaSeleccionada._id}`);
             setCategorias(recarga.data);
@@ -171,10 +172,11 @@ export default function TemporadasIndex() {
         };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.label}>Buscar liga</Text>
       <TextInput
         placeholder="Ej. Liga Municipal"
+        placeholderTextColor="#888"
         value={ligaBuscada}
         onChangeText={buscarLigas}
         style={styles.input}
@@ -183,16 +185,19 @@ export default function TemporadasIndex() {
       {ligas.map((liga) => (
         <TouchableOpacity
           key={liga._id}
-          style={styles.resultado}
+          style={styles.cardSugerencia}
           onPress={() => seleccionarLiga(liga)}
         >
-          <Text>{liga.nombre}</Text>
+          <Text style={styles.nombreSugerencia}>{liga.nombre}</Text>
+          <Text style={styles.detalleSugerencia}>Presiona para seleccionar</Text>
         </TouchableOpacity>
       ))}
 
       {ligaSeleccionada && (
         <>
-          <Text style={styles.titulo}>Categorías de {ligaSeleccionada.nombre}</Text>
+          <Text style={styles.titulo}>
+            Categorías de {ligaSeleccionada?.nombre ?? '...'}
+          </Text>
 
           {categorias.length === 0 ? (
             <Text style={{ marginTop: 10 }}>No hay categorías disponibles.</Text>
@@ -206,17 +211,23 @@ export default function TemporadasIndex() {
                     onPress={() => confirmarTemporada(item)}
                     >
                     <Text style={styles.nombreCategoria}>{item.nombre}</Text>
+                    {item.nombreTemporada ? (
+                        <Text style={styles.nombreTemporada}>📅 {item.nombreTemporada}</Text>
+                      ) : null}
                     <Text>Equipos: {item.totalEquipos}</Text>
                     <Text
-                        style={{
-                        color: item.tieneTemporada ? 'green' : 'orange',
+                      style={{
+                        color: item.temporadaActiva ? 'green' : item.tieneTemporada ? 'gray' : 'orange',
                         fontWeight: 'bold',
                         marginTop: 4
-                        }}
+                      }}
                     >
-                        {item.tieneTemporada ? '✅ Temporada existente' : '⚠ Sin temporada'}
+                      {item.temporadaActiva
+                        ? '✅ Temporada activa'
+                        : item.tieneTemporada
+                        ? '⚠ Temporada finalizada'
+                        : '⚠ Sin temporada'}
                     </Text>
-
                     {item.tieneTemporada && (
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                         <TouchableOpacity
@@ -225,7 +236,7 @@ export default function TemporadasIndex() {
                         router.push({
                             pathname: '/(admin)/temporadas/detalle',
                             params: {
-                            temporadaId: item.temporadaId, // ✅ Agregado
+                            temporadaId: item.temporadaId,
                             categoriaId: item._id,
                             nombreCategoria: item.nombre,
                             ligaId: ligaSeleccionada._id,
@@ -258,7 +269,7 @@ export default function TemporadasIndex() {
           )}
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -266,6 +277,7 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   label: { fontWeight: 'bold', marginBottom: 6 },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc',
     padding: 8, borderRadius: 6, marginBottom: 10
   },
@@ -298,5 +310,34 @@ const styles = StyleSheet.create({
 textoBoton: {
   color: 'white',
   fontWeight: 'bold'
+},
+cardSugerencia: {
+  backgroundColor: '#e0ecff',
+  borderWidth: 1,
+  borderColor: '#1E90FF',
+  borderRadius: 10,
+  padding: 12,
+  marginBottom: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+nombreSugerencia: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  color: '#003366',
+},
+detalleSugerencia: {
+  fontSize: 13,
+  color: '#555',
+  marginTop: 4,
+},
+nombreTemporada: {
+  fontSize: 14,
+  color: '#333',
+  marginTop: 2,
 }
+
 });

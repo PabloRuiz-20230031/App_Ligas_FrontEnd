@@ -5,7 +5,7 @@ import { AuthContext } from '@/context/AuthContext';
 import api from '@/api';
 import { useFocusEffect } from '@react-navigation/native';
 
-const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dprwy1viz/image/upload/v1721531371/escudo_default.png';
+const ESCUDO_DEFECTO = 'ttps://res.cloudinary.com/dkxz5wm2h/image/upload/v1755196792/dtlerpe2tfqd04gjjxqv.webph';
 
 export default function DetallePartido() {
   const { partidoId } = useLocalSearchParams();
@@ -114,10 +114,19 @@ export default function DetallePartido() {
       });
     });
 
+    // Autogoles formateados (extra aparte)
+    const autogolesFormateados: string[] = datos.autogoles?.length
+      ? datos.autogoles.map((a: any) => {
+          const esLocal = a.equipo === datos.equipoLocal._id;
+          return `Autogol ${esLocal ? 'local' : 'visitante'} – Min ${a.minuto}`;
+        })
+      : [];
+
     return {
       goles: eventos.filter(e => e.tipo === 'goles'),
       amarillas: eventos.filter(e => e.tipo === 'amarillas'),
       rojas: eventos.filter(e => e.tipo === 'rojas'),
+      autogolesFormateados
     };
   };
 
@@ -161,6 +170,17 @@ export default function DetallePartido() {
       <BloqueEventos titulo="Amonestaciones" items={eventos.amarillas} />
       <BloqueEventos titulo="Expulsiones" items={eventos.rojas} />
 
+      <View style={{ marginTop: 20 }}>
+        <Text style={styles.subtitulo}>Autogoles</Text>
+        {eventos.autogolesFormateados.length === 0 ? (
+          <Text style={styles.sinEventos}>Ninguno</Text>
+        ) : (
+          eventos.autogolesFormateados.map((linea, idx) => (
+            <Text key={idx} style={styles.evento}>{linea}</Text>
+          ))
+        )}
+      </View>
+
       <View style={{ marginTop: 30 }}>
         <Text style={styles.subtitulo}>Notas del Partido</Text>
         <Text style={styles.notas}>{datos.notas || 'Sin observaciones.'}</Text>
@@ -171,7 +191,7 @@ export default function DetallePartido() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f8ff',
     paddingTop: 20,
     paddingHorizontal: 16,
   },

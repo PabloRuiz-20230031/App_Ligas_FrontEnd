@@ -56,6 +56,7 @@ export default function RedesSocialesAdmin() {
         value={facebookUrl}
         onChangeText={setFacebookUrl}
         placeholder="URL de Facebook"
+        placeholderTextColor="#888"
       />
       <Button title="Actualizar Facebook" onPress={() => actualizarUrl('facebook', facebookUrl)} />
 
@@ -65,6 +66,7 @@ export default function RedesSocialesAdmin() {
         value={youtubeUrl}
         onChangeText={setYoutubeUrl}
         placeholder="URL de YouTube"
+        placeholderTextColor="#888"
       />
       <Button title="Actualizar YouTube" onPress={() => actualizarUrl('youtube', youtubeUrl)} />
     </ScrollView>
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#aaa',
     borderRadius: 8,

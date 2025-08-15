@@ -58,7 +58,7 @@ export default function EquiposScreen() {
       <View style={styles.info}>
         <Image
           source={{
-            uri: item.imagen || 'https://res.cloudinary.com/dprwy1viz/image/upload/v1721531371/escudo_default.png',
+            uri: item.imagen || 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755237910/fg0vdpelrilq8jqcbkhr.png',
           }}
           style={styles.imagen}
         />
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     flex: 1,
+    backgroundColor: '#f2f8ff'
   },
   card: {
     padding: 16,

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '@/api';
 
 interface Usuario {
   _id: string;
@@ -16,8 +17,8 @@ interface AuthContextProps {
   iniciarSesion: (token: string, usuario: Usuario, apiKey: string) => Promise<void>;
   cerrarSesion: () => Promise<void>;
   estaAutenticado: boolean;
+  actualizarUsuario: () => Promise<void>;
 }
-
 export const AuthContext = createContext<AuthContextProps>({
   usuario: null,
   token: null,
@@ -25,6 +26,7 @@ export const AuthContext = createContext<AuthContextProps>({
   iniciarSesion: async () => {},
   cerrarSesion: async () => {},
   estaAutenticado: false,
+  actualizarUsuario: async () => {}, // ✅ Agregado correctamente
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -62,6 +64,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem('usuario', JSON.stringify(usuarioData));
     await AsyncStorage.setItem('apiKey', nuevaApiKey);
   };
+  const actualizarUsuario = async () => {
+  if (!token) return;
+
+  try {
+    const res = await api.get('/usuarios/perfil', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setUsuario(res.data);
+    await AsyncStorage.setItem('usuario', JSON.stringify(res.data));
+    console.log('🔄 Usuario actualizado en contexto');
+  } catch (err) {
+    console.error('❌ Error al actualizar usuario:', err);
+  }
+};
 
   const cerrarSesion = async () => {
     setToken(null);
@@ -84,6 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         iniciarSesion,
         cerrarSesion,
         estaAutenticado,
+        actualizarUsuario
       }}
     >
       {children}

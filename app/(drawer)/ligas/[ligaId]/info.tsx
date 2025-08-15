@@ -42,6 +42,7 @@ export default function InfoLigaScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f2f8ff'
   },
   imagen: {
     width: '100%',

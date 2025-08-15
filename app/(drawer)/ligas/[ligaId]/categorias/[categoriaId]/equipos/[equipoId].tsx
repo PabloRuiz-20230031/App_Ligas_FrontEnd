@@ -6,7 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import api from '@/api';
 import { AuthContext } from '@/context/AuthContext';
 
-const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dprwy1viz/image/upload/v1753268469/descanso_qypb7w.webp';
+const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755196792/dtlerpe2tfqd04gjjxqv.webp';
 
 export default function DetalleEquipoPublico() {
   const { equipoId, ligaId, categoriaId } = useLocalSearchParams();
@@ -251,7 +251,7 @@ export default function DetalleEquipoPublico() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#fff' },
+  container: { padding: 16, backgroundColor: '#f2f8ff' },
   titulo: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
   mensajeSinTemporada: {
     marginTop: 20,

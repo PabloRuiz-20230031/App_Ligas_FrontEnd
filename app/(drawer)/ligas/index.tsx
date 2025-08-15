@@ -7,14 +7,13 @@ import {
   Image,
   ActivityIndicator,
   StyleSheet,
+  Dimensions
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { getLigas, Liga } from '@/services/ligaService';
 import { Ionicons } from '@expo/vector-icons';
 
-//export const navigationOptions = {
-//  drawerItemStyle: { display: 'none' },
-//};
+const { width } = Dimensions.get('window');
 
 export default function LigasScreen() {
   const [ligas, setLigas] = useState<Liga[]>([]);
@@ -38,7 +37,6 @@ export default function LigasScreen() {
 
   const renderLiga = ({ item }: { item: Liga }) => (
     <View style={styles.card}>
-      {/* Ir a categorías */}
       <TouchableOpacity
         onPress={() =>
           router.push({
@@ -57,7 +55,6 @@ export default function LigasScreen() {
         <Text style={styles.nombre}>{item.nombre ?? 'Sin nombre'}</Text>
       </TouchableOpacity>
 
-      {/* Ícono de información */}
       <TouchableOpacity
         onPress={() =>
           router.push({
@@ -84,8 +81,10 @@ export default function LigasScreen() {
         data={ligas}
         keyExtractor={(item) => String(item._id)}
         renderItem={renderLiga}
+        contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={<Text>No hay ligas disponibles</Text>}
       />
+      
     </View>
   );
 }
@@ -93,11 +92,11 @@ export default function LigasScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: '#f2f8ff',
   },
   card: {
     padding: 16,
-    marginVertical: 8,
+    margin: 16,
     backgroundColor: '#f9f9f9',
     borderRadius: 12,
     position: 'relative',

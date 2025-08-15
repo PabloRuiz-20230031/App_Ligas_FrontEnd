@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import api from '@/api';
 
-const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dprwy1viz/image/upload/v1721531371/escudo_default.png';
+const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755196792/dtlerpe2tfqd04gjjxqv.webp';
 
 export default function DetallePartidoPublico() {
   const { partidoId } = useLocalSearchParams();
@@ -110,7 +110,7 @@ export default function DetallePartidoPublico() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f8ff',
     paddingTop: 20,
     paddingHorizontal: 16,
   },

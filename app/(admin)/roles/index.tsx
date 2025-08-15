@@ -31,13 +31,15 @@ export default function CambiarRolUsuario() {
   const cambiarRol = async () => {
     if (!usuario) return;
 
+    const nuevoRol = usuario.rol === 'admin' ? 'usuario' : 'admin';
+
     try {
-      await api.put(`/usuarios/${usuario._id}/rol`, { rol: 'admin' }, {
+      await api.put(`/usuarios/${usuario._id}/rol`, { rol: nuevoRol }, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      Alert.alert('✅ Rol actualizado a administrador');
-      setUsuario({ ...usuario, rol: 'admin' });
+      Alert.alert(`✅ Rol actualizado a ${nuevoRol}`);
+      setUsuario({ ...usuario, rol: nuevoRol });
     } catch (error) {
       console.error('Error al cambiar rol:', error);
       Alert.alert('❌ No se pudo actualizar el rol');
@@ -49,6 +51,7 @@ export default function CambiarRolUsuario() {
       <Text style={styles.titulo}>Buscar usuario por correo</Text>
       <TextInput
         placeholder="Correo del usuario"
+        placeholderTextColor="#888"
         value={correo}
         onChangeText={setCorreo}
         keyboardType="email-address"
@@ -64,13 +67,15 @@ export default function CambiarRolUsuario() {
           <Text style={styles.label}>Correo: {usuario.correo}</Text>
           <Text style={styles.label}>Rol actual: {usuario.rol}</Text>
 
-          {usuario.rol === 'admin' ? (
-            <Text style={{ marginTop: 10, color: 'green', fontWeight: 'bold' }}>
-              ✅ Este usuario ya es administrador.
-            </Text>
-          ) : (
-            <Button title="Cambiar a administrador" color="#FF5722" onPress={cambiarRol} />
-          )}
+          <Button
+            title={
+              usuario.rol === 'admin'
+                ? 'Cambiar a usuario normal'
+                : 'Cambiar a administrador'
+            }
+            color={usuario.rol === 'admin' ? '#4CAF50' : '#FF5722'}
+            onPress={cambiarRol}
+          />
         </View>
       )}
     </View>
@@ -78,9 +83,10 @@ export default function CambiarRolUsuario() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
+  container: { padding: 16, backgroundColor: '#f2f8ff' },
   titulo: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc',
     borderRadius: 6, padding: 10, marginBottom: 10,
     backgroundColor: '#fff'

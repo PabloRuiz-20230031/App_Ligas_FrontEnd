@@ -114,6 +114,7 @@ export default function TemporadaFormulario() {
         value={nombre}
         onChangeText={setNombre}
         placeholder="Ej. Clausura 2025"
+        placeholderTextColor="#888"
         style={styles.input}
       />
 
@@ -125,6 +126,7 @@ export default function TemporadaFormulario() {
             onChangeText={setVueltas}
             keyboardType="numeric"
             placeholder="Ej. 2"
+            placeholderTextColor="#888"
             style={styles.input}
           />
         </>
@@ -175,10 +177,11 @@ export default function TemporadaFormulario() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
+  container: { padding: 16, backgroundColor: '#f2f8ff' },
   subtitulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 6 },
   label: { fontWeight: 'bold', marginTop: 14, marginBottom: 4 },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,

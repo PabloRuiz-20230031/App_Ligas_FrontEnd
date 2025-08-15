@@ -116,7 +116,7 @@ export default function AdminCategorias() {
                 },
               })
             }
-          >
+          >   
             <Text style={styles.botonTexto}>Editar</Text>
           </TouchableOpacity>
 
@@ -139,6 +139,7 @@ export default function AdminCategorias() {
         value={busqueda}
         onChangeText={setBusqueda}
         placeholder="Escribe el nombre de la liga"
+        placeholderTextColor="#888"
         style={styles.input}
       />
 
@@ -148,13 +149,14 @@ export default function AdminCategorias() {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.suggestion}
+              style={styles.cardSugerencia}
               onPress={() => {
                 setLigaSeleccionada(item);
                 setBusqueda(item.nombre);
               }}
             >
-              <Text>{item.nombre}</Text>
+              <Text style={styles.nombreSugerencia}>{item.nombre}</Text>
+              <Text style={styles.detalleSugerencia}>Presiona para seleccionar</Text>
             </TouchableOpacity>
           )}
         />
@@ -176,18 +178,6 @@ export default function AdminCategorias() {
           <Text style={styles.cambiarLigaTexto}>Cambiar de liga</Text>
         </TouchableOpacity>
 
-        <FlatList
-          data={categoriasFiltradas}
-          keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-          ListEmptyComponent={
-            <Text style={{ textAlign: 'center', marginVertical: 20 }}>
-              Aún no hay categorías
-            </Text>
-          }
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
-
         <Button
           title="Crear una nueva categoría"
           onPress={() =>
@@ -200,6 +190,19 @@ export default function AdminCategorias() {
             })
           }
         />
+
+        <FlatList
+          data={categoriasFiltradas}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          ListEmptyComponent={
+            <Text style={{ textAlign: 'center', marginVertical: 30, color: '#999' }}>
+              Aún no hay categorías para esta liga
+            </Text>
+          }
+          contentContainerStyle={{ paddingBottom: 30 }}
+        />
+
       </>
     )}
 
@@ -208,9 +211,10 @@ export default function AdminCategorias() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 16, backgroundColor: '#f2f8ff' },
   titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 8,
@@ -218,45 +222,79 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   suggestion: {
-    padding: 8,
-    backgroundColor: '#eee',
-    marginBottom: 5,
-    borderRadius: 5,
+    padding: 16,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   ligaSeleccionada: {
     fontWeight: 'bold',
     marginVertical: 10,
-  },
+  },  
   card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f3f3',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
   },
+
   imagen: {
     width: 70,
     height: 70,
-    borderRadius: 8,
+    borderRadius: 10,
     marginRight: 15,
-    backgroundColor: '#ddd',
+    backgroundColor: '#eee',
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-  nombre: { fontSize: 18, fontWeight: 'bold' },
-  liga: { fontSize: 14, color: '#555' },
+
+  nombre: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#333',
+  },
+
+  liga: {
+    fontSize: 14,
+    color: '#666',
+  },
+
   botones: {
     flexDirection: 'row',
     gap: 10,
     marginTop: 10,
   },
+
   boton: {
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
+
   botonTexto: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '600',
+    fontSize: 14,
   },
   cambiarLigaBtn: {
     alignSelf: 'flex-start',
@@ -270,6 +308,29 @@ const styles = StyleSheet.create({
   cambiarLigaTexto: {
     color: '#333',
     fontWeight: '600',
+  },
+  cardSugerencia: {
+    backgroundColor: '#e0ecff',
+    borderWidth: 1,
+    borderColor: '#1E90FF',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  nombreSugerencia: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#003366',
+  },
+  detalleSugerencia: {
+    fontSize: 13,
+    color: '#555',
+    marginTop: 4,
   },
 
 });

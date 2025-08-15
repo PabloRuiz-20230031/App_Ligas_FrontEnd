@@ -57,7 +57,7 @@ export default function InfoCategoriaScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f8ff',
     alignItems: 'stretch',
   },
   imagen: {

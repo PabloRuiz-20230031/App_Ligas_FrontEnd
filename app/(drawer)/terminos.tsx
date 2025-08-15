@@ -40,7 +40,7 @@ export default function TerminosScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
+  container: { padding: 20, backgroundColor: '#f2f8ff' },
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',

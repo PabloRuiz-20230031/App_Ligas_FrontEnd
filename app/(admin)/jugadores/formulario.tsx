@@ -12,7 +12,7 @@ import { BackHandler } from 'react-native';
 
 
 
-const CLOUD_NAME = 'dprwy1viz';
+const CLOUD_NAME = 'dkxz5wm2h';
 const UPLOAD_PRESET = 'liga_upload';
 
 export default function FormularioJugador() {
@@ -33,7 +33,7 @@ export default function FormularioJugador() {
   const [cargando, setCargando] = useState(false);
   const [mostrarFecha, setMostrarFecha] = useState(false);
 
-
+  
   // 🟢 Detectar automáticamente si es jugador o representante en modo edición
   useEffect(() => {
     if (modo === 'editar') {
@@ -144,8 +144,8 @@ useFocusEffect(
   };
 
   const validarYGuardar = async () => {
-    if (!nombre.trim() || !curp.trim()) {
-      Alert.alert('Campos requeridos', 'Nombre y CURP son obligatorios');
+    if (!nombre.trim()) {
+      Alert.alert('Campos requeridos', 'El nombre es obligatorio');
       return;
     }
 
@@ -181,17 +181,25 @@ useFocusEffect(
           return;
         }
 
-        await api.post('/jugadores', {
+        // ✅ Solo agregar curp si no está vacía
+        const jugadorPayload: any = {
           nombre,
-          curp,
           dorsal: dorsalNum,
           fechaNacimiento,
           foto: imagen || '',
-          equipo: equipoId
-        });
+          equipo: equipoId,
+        };
+
+        if (curp.trim() !== '') {
+          jugadorPayload.curp = curp.trim().toUpperCase();
+        }
+
+        await api.post('/jugadores', jugadorPayload);
+
         Alert.alert('Jugador registrado');
         router.push('/(admin)/jugadores');
-      } else {
+      }
+      else {
         if (!telefono.match(/^\d{10}$/)) {
           Alert.alert('Teléfono inválido', 'Debe tener 10 dígitos');
           return;
@@ -201,13 +209,19 @@ useFocusEffect(
           return;
         }
 
-        await api.post('/representantes', {
+        const representantePayload: any = {
           nombre,
-          curp,
           telefono,
           correo,
-          equipo: equipoId
-        });
+          equipo: equipoId,
+        };
+
+        if (curp.trim() !== '') {
+          representantePayload.curp = curp.trim().toUpperCase();
+        }
+
+        await api.post('/representantes', representantePayload);
+
         Alert.alert('Representante registrado');
         router.push('/(admin)/jugadores');
       }
@@ -261,9 +275,10 @@ useFocusEffect(
         )}
       </View>
 
-      <TextInput style={styles.input} placeholder="Nombre completo" value={nombre} onChangeText={setNombre} />
+      <TextInput style={styles.input} placeholder="Nombre completo" placeholderTextColor="#888" value={nombre} onChangeText={setNombre} />
       <TextInput 
         placeholder="CURP"
+        placeholderTextColor="#888"
         value={curp}
         onChangeText={(text) => {
           if (text.length <= 18) setCurp(text.toUpperCase()); // Solo permite hasta 18 y en mayúsculas
@@ -278,6 +293,7 @@ useFocusEffect(
           <TextInput
             style={styles.input}
             placeholder="Número de dorsal (1-999)"
+            placeholderTextColor="#888"
             keyboardType="numeric"
             value={dorsal}
             onChangeText={setDorsal}
@@ -311,6 +327,7 @@ useFocusEffect(
         <>
           <TextInput
             placeholder="Teléfono"
+            placeholderTextColor="#888"
             value={telefono}
             onChangeText={(text) => {
               const soloNumeros = text.replace(/[^0-9]/g, ''); // elimina cualquier carácter que no sea número
@@ -323,6 +340,7 @@ useFocusEffect(
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
+            placeholderTextColor="#888"
             keyboardType="email-address"
             value={correo}
             onChangeText={setCorreo}
@@ -336,9 +354,10 @@ useFocusEffect(
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f2f8ff' },
   titulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
     padding: 10, marginBottom: 10
   },

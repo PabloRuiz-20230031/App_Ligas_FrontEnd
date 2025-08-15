@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, FlatList,
-  TouchableOpacity, StyleSheet
+  TouchableOpacity, StyleSheet, ScrollView
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import api from '@/api';
@@ -72,13 +72,14 @@ export default function CedulasIndex() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.label}>Buscar liga</Text>
 
       {!ligaSeleccionada ? (
         <>
           <TextInput
             placeholder="Ej. Liga Municipal"
+            placeholderTextColor="#888"
             value={busqueda}
             onChangeText={buscarLigas}
             style={styles.input}
@@ -87,10 +88,11 @@ export default function CedulasIndex() {
           {ligas.map((liga) => (
             <TouchableOpacity
               key={liga._id}
-              style={styles.resultado}
+              style={styles.cardSugerencia}
               onPress={() => seleccionarLiga(liga)}
             >
-              <Text>{liga.nombre}</Text>
+              <Text style={styles.nombreSugerencia}>{liga.nombre}</Text>
+              <Text style={styles.detalleSugerencia}>Presiona para seleccionar</Text>
             </TouchableOpacity>
           ))}
         </>
@@ -120,26 +122,22 @@ export default function CedulasIndex() {
           {temporadas.length === 0 ? (
             <Text style={{ marginVertical: 10 }}>No hay temporadas activas para esta liga.</Text>
           ) : (
-            <FlatList
-              data={temporadas}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                <TouchableOpacity style={styles.card} onPress={() => irAJornadas(item)}>
-                  <Text style={styles.nombreCategoria}>{item.nombre}</Text>
-                  <Text style={styles.infoCategoria}>Categoría: {item.categoria?.nombre}</Text>
-                  <Text style={styles.fecha}>
-                    Inicio: {new Date(item.fechaInicio).toLocaleDateString()}
-                  </Text>
-                  <Text style={styles.fecha}>
-                    Fin: {new Date(item.fechaFin).toLocaleDateString()}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
+            temporadas.map((item) => (
+              <TouchableOpacity key={item._id} style={styles.card} onPress={() => irAJornadas(item)}>
+                <Text style={styles.nombreCategoria}>{item.nombre}</Text>
+                <Text style={styles.infoCategoria}>Categoría: {item.categoria?.nombre}</Text>
+                <Text style={styles.fecha}>
+                  Inicio: {new Date(item.fechaInicio).toLocaleDateString()}
+                </Text>
+                <Text style={styles.fecha}>
+                  Fin: {new Date(item.fechaFin).toLocaleDateString()}
+                </Text>
+              </TouchableOpacity>
+            ))
           )}
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -147,6 +145,7 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   label: { fontWeight: 'bold', marginBottom: 6 },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc',
     padding: 8, borderRadius: 6, marginBottom: 10
   },
@@ -177,5 +176,28 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 6,
     alignItems: 'center'
-  }
+  },
+  cardSugerencia: {
+  backgroundColor: '#e0ecff',
+  borderWidth: 1,
+  borderColor: '#1E90FF',
+  borderRadius: 10,
+  padding: 12,
+  marginBottom: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+nombreSugerencia: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  color: '#003366',
+},
+detalleSugerencia: {
+  fontSize: 13,
+  color: '#555',
+  marginTop: 4,
+},
 });

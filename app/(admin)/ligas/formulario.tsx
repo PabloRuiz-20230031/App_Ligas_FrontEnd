@@ -11,7 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
 import api from '@/api';
 
-const CLOUD_NAME = 'dprwy1viz';
+const CLOUD_NAME = 'dkxz5wm2h';
 const UPLOAD_PRESET = 'liga_upload';
 
 export default function LigaFormulario() {
@@ -187,6 +187,7 @@ export default function LigaFormulario() {
 
       <TextInput
         placeholder="Nombre de la liga"
+        placeholderTextColor="#888"
         style={styles.input}
         value={nombre}
         onChangeText={setNombre}
@@ -194,6 +195,7 @@ export default function LigaFormulario() {
 
       <TextInput
         placeholder="Descripción"
+        placeholderTextColor="#888"
         style={styles.input}
         value={descripcion}
         onChangeText={setDescripcion}
@@ -259,9 +261,9 @@ export default function LigaFormulario() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f2f8ff' },
   title: { fontSize: 22, fontWeight: 'bold', color: '#1E90FF', marginBottom: 15, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 15 },
+  input: { color: '#000', borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 15 },
   fechaBtn: {
     backgroundColor: '#eee',
     padding: 10,

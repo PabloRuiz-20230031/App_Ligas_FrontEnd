@@ -25,8 +25,8 @@ export default function FormularioContacto() {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Agregar Contacto</Text>
-      <TextInput style={styles.input} placeholder="Nombre" value={nombre} onChangeText={setNombre} />
-      <TextInput style={styles.input} placeholder="Correo electrónico" keyboardType="email-address" value={correo} onChangeText={setCorreo} />
+      <TextInput style={styles.input} placeholder="Nombre" placeholderTextColor="#888" value={nombre} onChangeText={setNombre} />
+      <TextInput style={styles.input} placeholder="Correo electrónico" placeholderTextColor="#888" keyboardType="email-address" value={correo} onChangeText={setCorreo} />
       <Button title="Guardar" onPress={guardar} />
     </View>
   );
@@ -35,5 +35,5 @@ export default function FormularioContacto() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 8 },
+  input: { color: '#000',borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 8 },
 });

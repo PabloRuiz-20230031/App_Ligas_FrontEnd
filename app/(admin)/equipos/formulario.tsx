@@ -13,7 +13,7 @@ import { useCallback } from 'react';
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
-const CLOUD_NAME = 'dprwy1viz';
+const CLOUD_NAME = 'dkxz5wm2h';
 const UPLOAD_PRESET = 'liga_upload';
 
 
@@ -131,7 +131,7 @@ const obtenerEquipo = async () => {
   try {
     setCargando(true);
 
-    let urlImagen = imagenCloudinary;
+    let urlImagen = imagenCloudinary || 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755237910/fg0vdpelrilq8jqcbkhr.png';
     if (imagenUri) {
       urlImagen = await subirImagen();
     }
@@ -166,6 +166,7 @@ const obtenerEquipo = async () => {
       <Text style={styles.title}>{modo === 'editar' ? 'Editar Equipo' : 'Registrar Equipo'}</Text>
       <TextInput
         placeholder="Nombre del equipo"
+        placeholderTextColor="#888"
         style={styles.input}
         value={nombre}
         onChangeText={setNombre}
@@ -173,6 +174,7 @@ const obtenerEquipo = async () => {
 
       <TextInput
         placeholder="Descripción del equipo"
+        placeholderTextColor="#888"
         style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
         value={descripcion}
         onChangeText={setDescripcion}
@@ -221,9 +223,9 @@ const obtenerEquipo = async () => {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f2f8ff' },
   title: { fontSize: 22, fontWeight: 'bold', color: '#1E90FF', marginBottom: 15, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 15 },
+  input: { color: '#000',borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 15 },
   botonImagen: {
     backgroundColor: '#1E90FF',
     padding: 10,

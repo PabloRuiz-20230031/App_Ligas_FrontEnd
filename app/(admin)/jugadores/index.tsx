@@ -53,36 +53,54 @@ export default function IndexJugadores() {
     const [representantes, setRepresentantes] = useState<any[]>([]);
 
   // Buscar ligas al cargar
-  useEffect(() => {
-    const fetchLigas = async () => {
-      const res = await api.get('/ligas');
-      setLigas(res.data);
-    };
-    fetchLigas();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchLigas = async () => {
+        try {
+          const res = await api.get('/ligas');
+          setLigas(res.data);
+        } catch (error) {
+          console.error('Error al cargar ligas:', error);
+        }
+      };
+      fetchLigas();
+    }, [])
+  );
 
   // Buscar categorías de la liga seleccionada
-  useEffect(() => {
-    if (ligaSeleccionada) {
-      const fetchCategorias = async () => {
-        const res = await api.get(`/categorias/por-liga/${ligaSeleccionada._id}`);
-        setCategorias(res.data);
-      };
-      fetchCategorias();
-    }
-  }, [ligaSeleccionada]);
+  useFocusEffect(
+    useCallback(() => {
+      if (ligaSeleccionada) {
+        const fetchCategorias = async () => {
+          try {
+            const res = await api.get(`/categorias/por-liga/${ligaSeleccionada._id}`);
+            setCategorias(res.data);
+          } catch (error) {
+            console.error('Error al cargar categorías:', error);
+          }
+        };
+        fetchCategorias();
+      }
+    }, [ligaSeleccionada])
+);
 
   // Buscar equipos de la categoría seleccionada
-  useEffect(() => {
-    if (categoriaSeleccionada) {
-      const fetchEquipos = async () => {
-        const res = await api.get('/equipos');
-        const filtrados = res.data.filter((e: Equipo) => e.categoria._id === categoriaSeleccionada._id);
-        setEquipos(filtrados);
-      };
-      fetchEquipos();
-    }
-  }, [categoriaSeleccionada]);
+  useFocusEffect(
+    useCallback(() => {
+      if (categoriaSeleccionada) {
+        const fetchEquipos = async () => {
+          try {
+            const res = await api.get('/equipos');
+            const filtrados = res.data.filter((e: Equipo) => e.categoria._id === categoriaSeleccionada._id);
+            setEquipos(filtrados);
+          } catch (error) {
+            console.error('Error al cargar equipos:', error);
+          }
+        };
+        fetchEquipos();
+      }
+    }, [categoriaSeleccionada])
+  );
 
   // Buscar jugadores del equipo seleccionado
   useFocusEffect(
@@ -171,13 +189,19 @@ export default function IndexJugadores() {
             <TextInput
             style={styles.input}
             placeholder="Escribe el nombre de la liga"
+            placeholderTextColor="#888"
             value={busquedaLiga}
             onChangeText={setBusquedaLiga}
             />
-            {ligasFiltradas.map(l => (
-            <TouchableOpacity key={l._id} style={styles.suggestion} onPress={() => setLigaSeleccionada(l)}>
-                <Text>{l.nombre}</Text>
-            </TouchableOpacity>
+            {ligasFiltradas.map((liga) => (
+              <TouchableOpacity
+                key={liga._id}
+                style={styles.cardSugerencia}
+                onPress={() => setLigaSeleccionada(liga)}
+              >
+                <Text style={styles.nombreSugerencia}>{liga.nombre}</Text>
+                <Text style={styles.detalleSugerencia}>Presiona para seleccionar</Text>
+              </TouchableOpacity>
             ))}
         </>
         ) : !categoriaSeleccionada ? (
@@ -198,13 +222,19 @@ export default function IndexJugadores() {
             <TextInput
             style={styles.input}
             placeholder="Escribe el nombre de la categoría"
+            placeholderTextColor="#888"
             value={busquedaCategoria}
             onChangeText={setBusquedaCategoria}
             />
-            {categoriasFiltradas.map(c => (
-            <TouchableOpacity key={c._id} style={styles.suggestion} onPress={() => setCategoriaSeleccionada(c)}>
-                <Text>{c.nombre}</Text>
-            </TouchableOpacity>
+            {categoriasFiltradas.map((cat) => (
+              <TouchableOpacity
+                key={cat._id}
+                style={styles.cardSugerencia}
+                onPress={() => setCategoriaSeleccionada(cat)}
+              >
+                <Text style={styles.nombreSugerencia}>{cat.nombre}</Text>
+                <Text style={styles.detalleSugerencia}>Pertenece a {cat.liga?.nombre || 'sin liga'}</Text>
+              </TouchableOpacity>
             ))}
         </>
         ) : !equipoSeleccionado ? (
@@ -234,14 +264,21 @@ export default function IndexJugadores() {
             <TextInput
             style={styles.input}
             placeholder="Escribe el nombre del equipo"
+            placeholderTextColor="#888"
             value={busquedaEquipo}
             onChangeText={setBusquedaEquipo}
             />
-            {equiposFiltrados.map(e => (
-            <TouchableOpacity key={e._id} style={styles.suggestion} onPress={() => setEquipoSeleccionado(e)}>
-                <Text>{e.nombre}</Text>
-            </TouchableOpacity>
+            {equiposFiltrados.map((eq) => (
+              <TouchableOpacity
+                key={eq._id}
+                style={styles.cardSugerencia}
+                onPress={() => setEquipoSeleccionado(eq)}
+              >
+                <Text style={styles.nombreSugerencia}>{eq.nombre}</Text>
+                <Text style={styles.detalleSugerencia}>Categoría: {eq.categoria?.nombre || 'Sin categoría'}</Text>
+              </TouchableOpacity>
             ))}
+
         </>
         ) : (
         <>
@@ -371,9 +408,10 @@ export default function IndexJugadores() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 15, backgroundColor: '#f2f8ff' },
   title: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },
   input: {
+    color: '#000',
     borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
     padding: 10, marginBottom: 10
   },
@@ -432,4 +470,22 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: '#ccc',
     },
+    cardSugerencia: {
+    backgroundColor: '#e0ecff',
+    borderWidth: 1,
+    borderColor: '#1E90FF',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  nombreSugerencia: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#003366',
+  },
+  detalleSugerencia: {
+    fontSize: 13,
+    color: '#555',
+    marginTop: 4,
+  },
 });

@@ -29,6 +29,7 @@ export default function FormularioPoliticas() {
           key={idx}
           style={styles.input}
           placeholder={`Política ${idx + 1}`}
+          placeholderTextColor="#888"
           value={item}
           onChangeText={(txt) => {
             const nuevos = [...politicas];
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,

@@ -8,7 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
 
 
-const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dprwy1viz/image/upload/v1753268469/descanso_qypb7w.webp';
+const ESCUDO_DEFECTO = 'https://res.cloudinary.com/dkxz5wm2h/image/upload/v1755196792/dtlerpe2tfqd04gjjxqv.webp';
 
 type TablaPosicion = {
   equipo: {
@@ -276,7 +276,7 @@ export default function DetalleTemporada() {
         }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#fff' },
+  container: { padding: 16, backgroundColor: '#f2f8ff' },
   titulo: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
   tabla: { borderWidth: 1, borderColor: '#ccc', minWidth: 650 },
   filaHeader: { flexDirection: 'row', backgroundColor: '#1E2A38', paddingVertical: 6 },
@@ -322,6 +322,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   picker: {
+    color: '#000',
     marginBottom: 12
   },
   cardJornada: {
